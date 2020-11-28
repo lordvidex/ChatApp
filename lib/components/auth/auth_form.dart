@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
-  const AuthForm(this.submitFn);
-  final Future<void> Function(
-      String email, String password, String username, bool _isLogin, BuildContext ctx) submitFn;
+  final bool isLoading;
+  const AuthForm(this.submitFn, this.isLoading);
+  final Future<void> Function(String email, String password, String username,
+      bool _isLogin, BuildContext ctx) submitFn;
   @override
   _AuthFormState createState() => _AuthFormState();
 }
@@ -52,6 +53,7 @@ class _AuthFormState extends State<AuthForm> {
               ),
               if (!_isLogin)
                 TextFormField(
+                    key: ValueKey('username'),
                     onSaved: (val) {
                       _username = val;
                     },
@@ -64,6 +66,7 @@ class _AuthFormState extends State<AuthForm> {
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(labelText: "Username")),
               TextFormField(
+                key: ValueKey('password'),
                 onSaved: (val) {
                   _password = val;
                 },
@@ -81,16 +84,22 @@ class _AuthFormState extends State<AuthForm> {
                 height: 12,
               ),
               RaisedButton(
-                  child: Text(_isLogin ? 'Login' : 'SignUp'),
-                  onPressed: _validateForm),
+                  child: widget.isLoading
+                      ? CircularProgressIndicator()
+                      : Text(_isLogin ? 'Login' : 'SignUp'),
+                  onPressed: widget.isLoading ? null : _validateForm),
               FlatButton(
                 textColor: Theme.of(context).primaryColor,
-                child: Text(_isLogin
-                    ? 'Create new account'
-                    : 'Login to an existing account'),
-                onPressed: () => setState(() {
-                  _isLogin = !_isLogin;
-                }),
+                child: widget.isLoading
+                    ? CircularProgressIndicator()
+                    : Text(_isLogin
+                        ? 'Create new account'
+                        : 'Login to an existing account'),
+                onPressed: widget.isLoading
+                    ? null
+                    : () => setState(() {
+                          _isLogin = !_isLogin;
+                        }),
               )
             ],
           ),
