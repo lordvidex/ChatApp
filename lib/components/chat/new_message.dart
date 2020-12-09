@@ -51,7 +51,9 @@ class _NewMessageState extends State<NewMessage> {
         children: [
           Expanded(
               child: TextField(
+            onSubmitted: (str) => str == '' ? null : _sendMessage(),
             controller: _controller,
+            textInputAction: TextInputAction.send,
             decoration: InputDecoration(
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20))),
