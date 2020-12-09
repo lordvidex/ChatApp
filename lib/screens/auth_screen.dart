@@ -11,7 +11,7 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
-   bool isLoading = false;
+  bool isLoading = false;
 
   Future<void> _submitAuthForm(
     String email,
@@ -45,6 +45,9 @@ class _AuthScreenState extends State<AuthScreen> {
       if (err.message != null) {
         message = err.message;
       }
+      setState(() {
+        isLoading = false;
+      });
       Scaffold.of(ctx).showSnackBar(new SnackBar(content: Text(message)));
     }
   }

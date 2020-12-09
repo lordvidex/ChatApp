@@ -29,6 +29,7 @@ class Messages extends StatelessWidget {
                       return 
                       MessageBubble(
                           docs[index].data['text'],
+                          docs[index].data['username'],
                           docs[index].data['userId'] ==
                               futureSnapshot.data.uid);
                     });

@@ -9,6 +9,7 @@ class NewMessage extends StatefulWidget {
 
 class _NewMessageState extends State<NewMessage> {
   final _controller = new TextEditingController();
+  String username;
   FirebaseUser user;
   @override
   void initState() {
@@ -20,10 +21,18 @@ class _NewMessageState extends State<NewMessage> {
 
   void _sendMessage() async {
     if (user == null) user = await FirebaseAuth.instance.currentUser();
+    if (username == null)
+      username = (await Firestore.instance
+          .collection('users')
+          .document(user.uid)
+          .get())['username'];
+    print('$username');
+    //.data['username'];
     Firestore.instance.collection('chats').add({
       'text': _controller.text,
       'createdAt': Timestamp.now(),
-      'userId': user.uid
+      'userId': user.uid,
+      'username': username,
     });
     _controller.clear();
   }
