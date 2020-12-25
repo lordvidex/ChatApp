@@ -1,6 +1,9 @@
 # chat_app
 
-A new Flutter project.
+Flutter fully featured Chat application from the Academind course    
+## Plus
+- It has fully functioning login features.
+- Users can view images and upload profile pictures.
 
 ## Getting Started
 

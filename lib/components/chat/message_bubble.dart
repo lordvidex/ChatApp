@@ -4,7 +4,8 @@ class MessageBubble extends StatelessWidget {
   final String message;
   final String username;
   final bool isMe;
-  MessageBubble(this.message, this.username, this.isMe);
+  final ValueKey key;
+  MessageBubble(this.key,this.message, this.username, this.isMe);
   @override
   Widget build(BuildContext context) {
     return Row(

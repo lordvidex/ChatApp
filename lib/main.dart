@@ -14,11 +14,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
+          //brightness: Brightness.light,
           primarySwatch: Colors.pink,
           backgroundColor: Colors.pink,
           accentColor: Colors.deepPurple,
           accentColorBrightness: Brightness.dark,
-          buttonTheme: ButtonTheme.of(context).copyWith(
+          iconTheme: IconTheme.of(context).copyWith(color: Colors.pink),
+          buttonTheme: ButtonThemeData(
             buttonColor: Colors.pink,
             textTheme: ButtonTextTheme.primary,
             shape:

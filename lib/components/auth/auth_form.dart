@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AuthForm extends StatefulWidget {
   final bool isLoading;
@@ -15,6 +17,7 @@ class _AuthFormState extends State<AuthForm> {
   String _email = '';
   String _password = '';
   bool _isLogin = true;
+  File _pickedImage;
   void _validateForm() {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
@@ -23,6 +26,22 @@ class _AuthFormState extends State<AuthForm> {
       widget.submitFn(_email, _password, _username, _isLogin, context);
     } else {
       return;
+    }
+  }
+
+  Future<void> _getImage() async {
+    final pickedFile = await ImagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxHeight: 40,
+        maxWidth: 40,
+        preferredCameraDevice: CameraDevice.rear);
+    if (pickedFile != null) {
+      setState(() {
+        _pickedImage = pickedFile;
+
+        ///@`Bug`: Bug here bypassed by passing this function to a
+        ///[GestureDetector] instead of the [TextButton]
+      });
     }
   }
 
@@ -38,7 +57,18 @@ class _AuthFormState extends State<AuthForm> {
           padding: EdgeInsets.all(16),
           child: Column(
             children: [
+              CircleAvatar(
+                radius: 40,
+                backgroundImage:
+                    _pickedImage == null ? null : FileImage(_pickedImage),
+              ),
+              FlatButton.icon(
+                icon: Icon(Icons.image),
+                label: Text('Add Image'),
+                onPressed: _getImage,
+              ),
               TextFormField(
+                key: ValueKey('email'),
                 onSaved: (val) {
                   _email = val;
                 },
