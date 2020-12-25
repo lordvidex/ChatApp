@@ -53,7 +53,7 @@ class _AuthScreenState extends State<AuthScreen> {
             .setData({
           'username': username,
           'email': email,
-          'profile_image_path': downloadUrl,
+          'userImage': downloadUrl,
         });
       }
       isLoading = false;

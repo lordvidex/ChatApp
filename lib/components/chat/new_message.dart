@@ -10,6 +10,7 @@ class NewMessage extends StatefulWidget {
 class _NewMessageState extends State<NewMessage> {
   final _controller = new TextEditingController();
   String username;
+  String userImage;
   FirebaseUser user;
   @override
   void initState() {
@@ -21,18 +22,20 @@ class _NewMessageState extends State<NewMessage> {
 
   void _sendMessage() async {
     if (user == null) user = await FirebaseAuth.instance.currentUser();
-    if (username == null)
-      username = (await Firestore.instance
+    final documentSnapshot = await Firestore.instance
           .collection('users')
           .document(user.uid)
-          .get())['username'];
-    print('$username');
+          .get();
+    if (username == null)
+      username = documentSnapshot['username'];
+    if(userImage==null)userImage = documentSnapshot['userImage'];
     //.data['username'];
     Firestore.instance.collection('chats').add({
       'text': _controller.text,
       'createdAt': Timestamp.now(),
       'userId': user.uid,
       'username': username,
+      'userImage': userImage,
     });
     _controller.clear();
   }
