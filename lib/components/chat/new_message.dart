@@ -22,13 +22,10 @@ class _NewMessageState extends State<NewMessage> {
 
   void _sendMessage() async {
     if (user == null) user = await FirebaseAuth.instance.currentUser();
-    final documentSnapshot = await Firestore.instance
-          .collection('users')
-          .document(user.uid)
-          .get();
-    if (username == null)
-      username = documentSnapshot['username'];
-    if(userImage==null)userImage = documentSnapshot['userImage'];
+    final documentSnapshot =
+        await Firestore.instance.collection('users').document(user.uid).get();
+    if (username == null) username = documentSnapshot['username'];
+    if (userImage == null) userImage = documentSnapshot['userImage'];
     //.data['username'];
     Firestore.instance.collection('chats').add({
       'text': _controller.text,
@@ -54,6 +51,8 @@ class _NewMessageState extends State<NewMessage> {
         children: [
           Expanded(
               child: TextField(
+            minLines: 1,
+            maxLines: 3,
             onSubmitted: (str) => str == '' ? null : _sendMessage(),
             controller: _controller,
             textInputAction: TextInputAction.send,

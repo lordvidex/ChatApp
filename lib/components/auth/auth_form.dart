@@ -37,8 +37,8 @@ class _AuthFormState extends State<AuthForm> {
     final pickedFile = await ImagePicker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 50,
-      maxHeight: 40,
-      maxWidth: 40,
+      //maxHeight: 200,
+      maxWidth: 200,
     );
     if (pickedFile != null) {
       setState(() {
@@ -64,31 +64,33 @@ class _AuthFormState extends State<AuthForm> {
           padding: EdgeInsets.all(16),
           child: Column(
             children: [
-              CircleAvatar(
-                radius: 40,
-                backgroundImage:
-                    _pickedImage == null ? null : FileImage(_pickedImage),
-              ),
+              if (!_isLogin)
+                CircleAvatar(
+                  radius: 40,
+                  backgroundImage:
+                      _pickedImage == null ? null : FileImage(_pickedImage),
+                ),
               //Temporary Bug fix.. maybe removed after testing on real device
-              Platform.isIOS
-                  ? GestureDetector(
-                      child: Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-                        child: Text(
-                          'Add Image',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.w500,
+              if (!_isLogin)
+                Platform.isIOS
+                    ? GestureDetector(
+                        child: Container(
+                          margin:
+                              EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                          child: Text(
+                            'Add Image',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
+                        onTap: _getImage)
+                    : FlatButton.icon(
+                        icon: Icon(Icons.image),
+                        label: Text('Add Image'),
+                        onPressed: _getImage,
                       ),
-                      onTap: _getImage)
-                  : FlatButton.icon(
-                      icon: Icon(Icons.image),
-                      label: Text('Add Image'),
-                      onPressed: _getImage,
-                    ),
               TextFormField(
                 key: ValueKey('email'),
                 onSaved: (val) {

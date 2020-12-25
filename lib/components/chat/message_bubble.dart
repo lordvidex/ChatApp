@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +13,9 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void _openLargeImage() {
-      //add method for viewing image
+      showDialog(context: context, builder: (ctx) => ImageDialog(userImage));
     }
+
     return Row(
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -21,9 +23,12 @@ class MessageBubble extends StatelessWidget {
         if (!isMe)
           GestureDetector(
             onTap: _openLargeImage,
-            child: CircleAvatar(
-              radius: 20,
-              backgroundImage: CachedNetworkImageProvider(userImage),
+            child: Hero(
+              tag: 'image_dialog',
+              child: CircleAvatar(
+                radius: 20,
+                backgroundImage: CachedNetworkImageProvider(userImage),
+              ),
             ),
           ),
         messageBox(context),
@@ -63,5 +68,26 @@ class MessageBubble extends StatelessWidget {
                   bottomLeft: !isMe ? Radius.zero : Radius.circular(12),
                   bottomRight: isMe ? Radius.zero : Radius.circular(12)))),
     );
+  }
+}
+
+class ImageDialog extends StatelessWidget {
+  final String imageUrl;
+  ImageDialog(String imageUrl) : this.imageUrl = imageUrl;
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+        child: Hero(
+      tag: 'image_dialog',
+      child: Container(
+          width: min(200, double.infinity),
+          height: min(200, double.infinity),
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: CachedNetworkImageProvider(
+                    this.imageUrl,
+                  )))),
+    ));
   }
 }
