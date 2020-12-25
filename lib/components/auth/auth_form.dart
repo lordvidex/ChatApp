@@ -6,7 +6,7 @@ class AuthForm extends StatefulWidget {
   final bool isLoading;
   const AuthForm(this.submitFn, this.isLoading);
   final Future<void> Function(String email, String password, String username,
-      bool _isLogin, BuildContext ctx) submitFn;
+      bool _isLogin, BuildContext ctx, String imagePath) submitFn;
   @override
   _AuthFormState createState() => _AuthFormState();
 }
@@ -23,26 +23,33 @@ class _AuthFormState extends State<AuthForm> {
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState.save();
-      widget.submitFn(_email, _password, _username, _isLogin, context);
+
+      ///`_pickedImage` returns an empty string '' if no image was picked
+      widget.submitFn(_email, _password, _username, _isLogin, context,
+          _pickedImage?.path ?? '');
     } else {
       return;
     }
   }
 
   Future<void> _getImage() async {
+    print("beginning of function");
     final pickedFile = await ImagePicker.pickImage(
-        source: ImageSource.gallery,
-        maxHeight: 40,
-        maxWidth: 40,
-        preferredCameraDevice: CameraDevice.rear);
+      source: ImageSource.gallery,
+      imageQuality: 50,
+      maxHeight: 40,
+      maxWidth: 40,
+    );
     if (pickedFile != null) {
       setState(() {
         _pickedImage = pickedFile;
+        print("Image has been set");
 
-        ///@`Bug`: Bug here bypassed by passing this function to a
-        ///[GestureDetector] instead of the [TextButton]
+        ///@`Bug` on debug: Bug here bypassed by passing this function to a
+        ///[GestureDetector] instead of the [TextButton] on **IOS only**
       });
     }
+    print("End of function reached");
   }
 
   @override
@@ -62,11 +69,26 @@ class _AuthFormState extends State<AuthForm> {
                 backgroundImage:
                     _pickedImage == null ? null : FileImage(_pickedImage),
               ),
-              FlatButton.icon(
-                icon: Icon(Icons.image),
-                label: Text('Add Image'),
-                onPressed: _getImage,
-              ),
+              //Temporary Bug fix.. maybe removed after testing on real device
+              Platform.isIOS
+                  ? GestureDetector(
+                      child: Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                        child: Text(
+                          'Add Image',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      onTap: _getImage)
+                  : FlatButton.icon(
+                      icon: Icon(Icons.image),
+                      label: Text('Add Image'),
+                      onPressed: _getImage,
+                    ),
               TextFormField(
                 key: ValueKey('email'),
                 onSaved: (val) {
