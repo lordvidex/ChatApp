@@ -27,7 +27,9 @@ class MessageBubble extends StatelessWidget {
               tag: 'image_dialog',
               child: CircleAvatar(
                 radius: 20,
-                backgroundImage: CachedNetworkImageProvider(userImage),
+                backgroundImage: userImage.isEmpty || userImage == null
+                    ? null
+                    : CachedNetworkImageProvider(userImage),
               ),
             ),
           ),
